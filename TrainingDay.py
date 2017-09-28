@@ -53,7 +53,7 @@ y_train = np.array(augmented_measurements)
 
 
 from keras.models import Sequential, Model
-from keras.layers import Flatten, Dense, Lambda, Cropping2D
+from keras.layers import Flatten, Dense, Lambda, Cropping2D, Dropout
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 import matplotlib.pyplot as pyplot
