@@ -3,6 +3,16 @@
 import csv
 import cv2
 import numpy as np
+from keras.models import Sequential, Model
+from keras.layers import Flatten, Dense, Lambda, Cropping2D
+from keras.layers.convolutional import Convolution2D
+from keras.layers.pooling import MaxPooling2D
+import matplotlib.pyplot as pyplot
+from sklearn.model_selection import train_test_split
+import sklearn
+
+
+
 
 lines = []
 #edit this line
@@ -48,15 +58,35 @@ for image, measurement in zip(images,measurements):
     #flip the image to get another data point
     augmented_images.append(cv2.flip(image,1))
     augmented_measurements.append(measurement*-1.0)
-X_train = np.array(augmented_images)
-y_train = np.array(augmented_measurements)
+
+#Combine augmented dataset
+dataSet = (np.array(augmented_images), np.array(augmented_measurments))
+
+#split the data
+
+train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
 
-from keras.models import Sequential, Model
-from keras.layers import Flatten, Dense, Lambda, Cropping2D
-from keras.layers.convolutional import Convolution2D
-from keras.layers.pooling import MaxPooling2D
-import matplotlib.pyplot as pyplot
+
+def generator(samples, batch_size=32):
+    num_samples = len(samples)
+    while 1:
+        shuffle(samples)
+        for offset in range(0, num_samples, batch_size):
+            batch_samples = samples[offset:offset+batch_size]
+            images = []
+            angles = []
+            for batch_sample in batch_samples:
+                images.append(batch_sample[0])
+                angles.append(batch_sample[1])
+            X_train = np.array(images)
+            y_train = np.array(angles)
+            yield sklearn.utils.shuffle(X_train,y_train)
+
+train_generator = generator(train_samples, batch_size = 32)
+validation_generator = generator(validation_samples, batch_size = 32)
+                
+
 
 #Create model using NVIDIA architecture
 model = Sequential()
@@ -80,8 +110,8 @@ model.add(Convolution2D(48,5,5, subsample=(2,2), activation = 'elu'))
 model.add(Convolution2D(64,3,3, activation = 'elu'))
 model.add(Convolution2D(64,3,3, activation = 'elu'))
 model.add(Flatten())
-
 model.add(Dense(100))
+#add a dropout layer
 model.add(Dropout(0.5))
 model.add(Dense(50))
 model.add(Dense(10))
@@ -89,13 +119,14 @@ model.add(Dense(1))
 
 #Uses Adam optimizer
 model.compile(loss = 'mse', optimizer = 'adam')
-model.fit(X_train, y_train, validation_split = 0.2, shuffle = True, verbose = 1)
-'''
-history_object = model.fit_generator(train_generator, samples_per_epoch =
-                                     len(train_samples), validation_data =
-                                     validation_generator,
-                                     nv_val_samples = len(validation_samples),
-                                     nb_epoch-5, verbose = 1)
+#Regular model fit
+#model.fit(X_train, y_train, validation_split = 0.2, shuffle = True, verbose = 1)
+
+#Model Fit with Generator
+#model.fit_generator(train_generator, samples_per_epoch = len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=3)
+
+history_object = model.fit_generator(train_generator, samples_per_epoch = len(train_samples), validation_data = validation_generator, nb_val_samples = len(validation_samples),nb_epoch=5, verbose = 1)
+
 print(history_object.history.keys())
 
 plt.plot(history_object.history['loss'])
@@ -104,7 +135,8 @@ plt.title('model mean squared error loss')
 plt.ylabel('mean squared error loss')
 plt.xlavel('epoch')
 plt.legend(['training set', 'validation set'], loc = 'upper right')
+plt.ion()
 plt.show()
-'''
+
 model.save('model.h5')
 print('Model Saved')
