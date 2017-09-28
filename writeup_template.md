@@ -1,8 +1,5 @@
 #**Behavioral Cloning** 
 
-##Writeup Template
-
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
 ---
 
@@ -35,7 +32,7 @@ The goals / steps of this project are the following:
 ####1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
-* model.py containing the script to create and train the model
+* trainingday_generator.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md or writeup_report.pdf summarizing the results
@@ -54,25 +51,22 @@ The model.py file contains the code for training and saving the convolution neur
 
 ####1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
-
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+My model uses the NIVIDIA archetecture (TrainingDay_generator.py). It uses 'elu' activations instead of 'relu' for better performance. The data is normalized in the model using a Keras lambda layer. The data is also cropped to remove irrelevant information. 
 
 ####2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains one dropout layer in order to reduce overfitting.
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 ####3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually.
 
 ####4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+The training data used was from Udacity's sample data. I tried gathering data on my own, but since I was a poor driver, my new data ended up performing worse.
 
-For details about how I created the training data, see the next section. 
 
 ###Model Architecture and Training Strategy
 
@@ -114,16 +108,15 @@ I then recorded the vehicle recovering from the left side and right sides of the
 
 Then I repeated this process on track two in order to get more data points.
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+To augment the data sat, I also flipped images and angles thinking that this would remove the car's bias to turn left. For example, here is an image that has then been flipped:
 
 ![alt text][image6]
 ![alt text][image7]
 
-Etc ....
+I also used both the left camera and right camera angles and added a correction factor of 0.1 and -0.1 to the angles, respectively. This correction factor was chosen experimentally and seems to do a good job. Of course, these images and angles were reversed as well. For every line on the driving_log.csv, I was able to get 6 data points. 
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+After the collection process, I had X number of data points. I then preprocessed this data by converting the image from BGR to RGB. This is because cv.imread() creates the image in BGR format, whereas the drive.py file reads it in RGB. This mismatch will cause the car to drive over the dirt path. Converting it beforehand will keep the car on the track. In the model, I also normalized the data and cropped the image. This is beacuse normalizing the data will lead to a faster convergence and cropping the data will remove uninteresting data such as the sky and the car's dashboard.
 
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 5 as evidenced by the error output. I used an adam optimizer so that manually training the learning rate wasn't necessary.
