@@ -89,6 +89,7 @@ model.add(Convolution2D(64,3,3, activation = 'relu'))
 model.add(Convolution2D(24,5,5, subsample=(2,2), activation = 'elu'))
 model.add(Convolution2D(36,5,5, subsample=(2,2), activation = 'elu'))
 model.add(Convolution2D(48,5,5, subsample=(2,2), activation = 'elu'))
+model.add(Dropout(0.5))
 model.add(Convolution2D(64,3,3, activation = 'elu'))
 model.add(Convolution2D(64,3,3, activation = 'elu'))
 model.add(Flatten())
@@ -111,7 +112,7 @@ history_object = model.fit_generator(train_generator, samples_per_epoch = len(tr
 model.save('model.h5')
 print('Model Saved')
 #print(history_object.history.keys())
-
+'''
 plt.plot(history_object.history['loss'])
 plt.plot(history_object.history['val_loss'])
 plt.title('model mean squared error loss')
@@ -121,5 +122,5 @@ plt.legend(['training set', 'validation set'], loc = 'upper right')
 plt.savefig('training_curve.png')
 plt.ion()
 plt.show()
-
+'''
 
