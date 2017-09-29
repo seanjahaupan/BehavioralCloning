@@ -108,7 +108,8 @@ model.compile(loss = 'mse', optimizer = 'adam')
 #model.fit_generator(train_generator, samples_per_epoch = len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=3)
 
 history_object = model.fit_generator(train_generator, samples_per_epoch = len(train_samples)*6, validation_data = validation_generator, nb_val_samples = len(validation_samples)*6,nb_epoch=5, verbose = 1)
-
+model.save('model.h5')
+print('Model Saved')
 #print(history_object.history.keys())
 
 plt.plot(history_object.history['loss'])
@@ -121,5 +122,4 @@ plt.savefig('training_curve.png')
 plt.ion()
 plt.show()
 
-model.save('model.h5')
-print('Model Saved')
+
