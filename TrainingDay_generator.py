@@ -51,11 +51,11 @@ def generator(samples, batch_size = 32):
                     angle = float(batch_sample[3]) + correction
             
                 
-                images.append(image)
-                angles.append(angle)
-                 #invert
-                images.append(cv2.flip(image,1))
-                angles.append(angle*-1.0)
+                    images.append(image)
+                    angles.append(angle)
+                     #invert
+                    images.append(cv2.flip(image,1))
+                    angles.append(angle*-1.0)
 ### ADDD MORE AUGMENT IF AUGMENT IS SET TO TRUE
 
             X_train = np.array(images)
