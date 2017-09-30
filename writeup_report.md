@@ -31,7 +31,9 @@ My project includes the following files:
 * Trainingday_generator.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
+* writeup_report.md summarizing the results
+* vid.mp4 successful video of the car making a lap across the track
+
 
 ####2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
@@ -127,4 +129,5 @@ I used this training data for training the model. The validation set helped dete
 ![alt text][image3]
 
 ####4. Conclusion
+
 This project was relatively difficult because there wasn't much that I could change on the architecture to create a better result. The way I was able to make my model drive properly was to 1) Convert the images to RGB from BGR, 2) Remove any instances when the steering angle was 0, and 3) collect more training data. Since I was a terrible driver in the simulator, I started with Udacity's sample data and worked from there. This current model performs poorly on the challenge set, I believe it's because the lanes of the challenge set are too close to each other. This is causing my correction factor to over compensate and is causing my car to go off the road. If I go back to this project, I will lower the correction factor and train on the challenge course extensively. 
