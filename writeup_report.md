@@ -28,7 +28,7 @@ The goals / steps of this project are the following:
 ####1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
-* Trainingday_generator.py containing the script to create and train the model
+* model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md summarizing the results
@@ -55,8 +55,7 @@ My model uses the NIVIDIA archetecture (TrainingDay_generator.py). It uses 'elu'
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
-I tried adding dropout layers in my neural network, but didn't see any significant improvement, so I took it out.
-
+I added a dropout layer after the 'Dense(100)' layer to reduce overfitting.
 
 
 ####3. Model parameter tuning
@@ -103,6 +102,7 @@ Subsample 2x2 kernel 48@37x5
 2D Convolution 3x3 kernel 64@33x1
 Flatten 2212 neurons
 Dense 100 neurons
+Dropout layer (p=0.5)
 Dense 50 neurons
 Dense 10 neurons
 Dense 1 neuron -> output
