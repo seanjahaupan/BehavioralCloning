@@ -15,6 +15,7 @@ def main():
         type=int,
         default=60,
         help='FPS (Frames per second) setting for the video.')
+    
     args = parser.parse_args()
 
     video_file = args.image_folder + '.mp4'
