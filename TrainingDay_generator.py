@@ -19,7 +19,7 @@ def preprocess(samples, minThresh = 0.001, correctionFactor = 0.2):
     filenames = []
     angles = []
     for sample in samples:
-        if float(sample[3]) < minThresh:
+        if abs(float(sample[3])) < minThresh:
             #if the angle is below the minThresh, don't add this file to the dataset
             continue
         for i in range(3):
@@ -85,7 +85,7 @@ def equalize(dataSet, distribution):
     return dataSet
             
     
-def generator(dataSet, batch_size = 32, threshold = 0.2):
+def generator(dataSet, batch_size = 32, threshold = 0.3):
     #print(dataSet)
     filenames = dataSet[0]
     angles = dataSet[1]
@@ -151,15 +151,13 @@ train_file_path, validation_file_path, train_angles, validation_angles = train_t
 train_samples = (train_file_path, train_angles)
 validation_samples = (validation_file_path, validation_angles)
 
-train_generator = generator(train_samples, batch_size = 128)
-validation_generator = generator(validation_samples, batch_size = 128)
+train_generator = generator(train_samples, batch_size = 256, threshold = 0)
+validation_generator = generator(validation_samples, batch_size = 256, threshold = 0)
                 
 
 
 #Create model using NVIDIA architecture
 model = Sequential()
-#Load previous model as a starting point
-#model.load_weights("model.h5")
 model.add(Lambda(lambda x: x/255.0 - 0.5, input_shape = (160,320,3)))
 model.add(Cropping2D(cropping=((70,25),(0,0))))
 #elu activation
@@ -170,6 +168,7 @@ model.add(Convolution2D(64,3,3, activation = 'elu'))
 model.add(Convolution2D(64,3,3, activation = 'elu'))
 model.add(Flatten())
 model.add(Dense(100))
+model.add(Dropout(0.5))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
@@ -177,16 +176,13 @@ model.add(Dense(1))
 #Uses Adam optimizer
 model.compile(loss = 'mse', optimizer = 'adam')
 
-
 #Model Fit with Generator
-#model.fit_generator(train_generator, samples_per_epoch = len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=3)
-
 history_object = model.fit_generator(train_generator, samples_per_epoch = len(train_file_path),
                                      validation_data = validation_generator, nb_val_samples = len(validation_file_path),nb_epoch=5, verbose = 1)
 model.save('model.h5')
 print('Model Saved')
 #print(history_object.history.keys())
-'''
+
 plt.plot(history_object.history['loss'])
 plt.plot(history_object.history['val_loss'])
 plt.title('model mean squared error loss')
@@ -196,4 +192,4 @@ plt.legend(['training set', 'validation set'], loc = 'upper right')
 plt.savefig('training_curve.png')
 plt.ion()
 plt.show()
-'''
+

@@ -55,9 +55,9 @@ My model uses the NIVIDIA archetecture (TrainingDay_generator.py). It uses 'elu'
 
 ####2. Attempts to reduce overfitting in the model
 
-The model contains one dropout layer in order to reduce overfitting.
-
 The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+
+I took a look 
 
 ####3. Model parameter tuning
 
