@@ -183,6 +183,7 @@ model.save('model.h5')
 print('Model Saved')
 #print(history_object.history.keys())
 
+plt.gcf().clear()
 plt.plot(history_object.history['loss'])
 plt.plot(history_object.history['val_loss'])
 plt.title('model mean squared error loss')
